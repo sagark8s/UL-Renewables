@@ -18,8 +18,10 @@ pipeline {
                     def buildNumber = env.BUILD_NUMBER
                     echo "Build Number: ${buildNumber}"
                     
-                    // Build Docker image and tag with both commit hash and build number
+                    // Build Docker image with commit hash tag
                     sh "docker build . -t ${dockerImageName}:${hash}"
+                    
+                    // Tag Docker image with build number
                     sh "docker tag ${dockerImageName}:${hash} ${containerRegistryName}/${dockerImageName}:${buildNumber}"
                     
                     // Docker login and push the image tagged with build number

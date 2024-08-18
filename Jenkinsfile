@@ -18,12 +18,11 @@ pipeline {
                     def buildNumber = env.BUILD_NUMBER
                     echo "Build Number: ${buildNumber}"
                     
-                    // Build Docker image
+                    // Build Docker image and tag with both commit hash and build number
                     sh "docker build . -t ${dockerImageName}:${hash}"
-                    sh "docker tag ${dockerImageName}:${hash} ${containerRegistryName}/${dockerImageName}:${hash}"
-                    sh "docker tag ${containerRegistryName}/${dockerImageName}:${hash} ${containerRegistryName}/${dockerImageName}:${buildNumber}"
+                    sh "docker tag ${dockerImageName}:${hash} ${containerRegistryName}/${dockerImageName}:${buildNumber}"
                     
-                    // Docker login and push
+                    // Docker login and push the image tagged with build number
                     withCredentials([usernamePassword(credentialsId: 'dockerCredentialsId', usernameVariable: 'D_USERNAME', passwordVariable: 'D_PASSWORD')]) {
                         sh "echo ${D_PASSWORD} | docker login ${containerRegistryName} -u ${D_USERNAME} --password-stdin"
                         sh "docker push ${containerRegistryName}/${dockerImageName}:${buildNumber}"

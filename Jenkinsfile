@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         containerRegistryName = 'containerregistry1z.azurecr.io'
-        dockerImageName = 'ul-renewables1'
+        dockerImageName = 'ul-renewables'
     }
 
     stages {
@@ -28,6 +28,18 @@ pipeline {
                         sh "echo ${D_PASSWORD} | docker login ${containerRegistryName} -u ${D_USERNAME} --password-stdin"
                         sh "docker push ${containerRegistryName}/${dockerImageName}:${buildNumber}"
                     }
+                }
+            }
+        }
+        
+        stage('Pull and Run Docker Image') {
+            steps {
+                script {
+                    // Pull the Docker image using the build number
+                    sh "docker pull ${containerRegistryName}/${dockerImageName}:${buildNumber}"
+                    
+                    // Run the Docker container with the pulled image
+                    sh "docker run --name ul-renewables -d -p 8560:8560 ${containerRegistryName}/${dockerImageName}:${buildNumber}"
                 }
             }
         }

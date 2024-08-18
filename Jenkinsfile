@@ -14,7 +14,7 @@ pipeline {
                     def hash = sh(script: 'git rev-parse HEAD', returnStdout: true).trim()
                     echo "Commit Hash: ${hash}"
                     
-                    // Define build number
+                    // Access the Jenkins build number from the environment variable
                     def buildNumber = env.BUILD_NUMBER
                     echo "Build Number: ${buildNumber}"
                     
@@ -37,10 +37,10 @@ pipeline {
             steps {
                 script {
                     // Pull the Docker image using the build number
-                    sh "docker pull ${containerRegistryName}/${dockerImageName}:${buildNumber}"
+                    sh "docker pull ${containerRegistryName}/${dockerImageName}:${env.BUILD_NUMBER}"
                     
                     // Run the Docker container with the pulled image
-                    sh "docker run --name ul-renewables -d -p 8560:8560 ${containerRegistryName}/${dockerImageName}:${buildNumber}"
+                    sh "docker run --name ul-renewables -d -p 8560:8560 ${containerRegistryName}/${dockerImageName}:${env.BUILD_NUMBER}"
                 }
             }
         }

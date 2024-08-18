@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         containerRegistryName = 'containerregistry1z.azurecr.io'
-        dockerImageName = 'ul-renewables'
+        dockerImageName = 'ul-renewables1'
     }
 
     stages {
